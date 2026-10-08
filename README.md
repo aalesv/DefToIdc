@@ -3,7 +3,7 @@
 This is fork of XmlToIdc. It converts RomRaider ECU and logger definitions,
 EcuFlash and ScoobyRom definitions to IDC script.
 
-**To run you need .NET 8 runtime installed**
+**To run you need .NET 10 runtime installed**
 
 Usage:
 

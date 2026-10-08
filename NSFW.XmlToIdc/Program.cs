@@ -36,40 +36,35 @@ internal class Program
 		public FatalException(string message) : base(message) {}
 		public FatalException(string message, Exception inner) : base(message, inner) {}
 	}
-	private static string _all_defs_dir = "";
 	private static string all_defs_dir
 	{
-		get => _all_defs_dir;
-		set => _all_defs_dir = ValidDirString(value);
-	}
+		get => field;
+		set => field = ValidDirString(value);
+	} = "";
 
-	private static string _ecu_defs = "ecu_defs.xml";
 	private static string ecu_defs
 	{
-		get => all_defs_dir + _ecu_defs;
-		set => _ecu_defs = value;
-	}
+		get => all_defs_dir + field;
+		set => field = value;
+	} = "ecu_defs.xml";
 
-	private static string _logger_dir = "";
 	private static string logger_dir
 	{
-		get => _logger_dir;
-		set => _logger_dir = ValidDirString(value);
-	}
+		get => field;
+		set => field = ValidDirString(value);
+	} = "";
 	
-	private static string _logger_xml = "logger.xml";
 	private static string logger_xml
 	{
-		get => LoggerFileFullPath(_logger_xml);
-		set => _logger_xml = value;
-	}
+		get => LoggerFileFullPath(field);
+		set => field = value;
+	} = "logger.xml";
 	
-	private static string _logger_dtd = "logger.dtd";
 	private static string logger_dtd
 	{
-		get => LoggerFileFullPath(_logger_dtd);
-		set => _logger_dtd = value;
-	}
+		get => LoggerFileFullPath(field);
+		set => field = value;
+	} = "logger.dtd";
 
 	private static CliCommand cmd = CliCommand.none;
 
@@ -192,7 +187,8 @@ internal class Program
 		var cli_all_defs_dir = new Option<string>
 		(
 			name: "--all-defs-dir",
-			description: "Directory where ECU defs, logger defs and .dtd file are placed."
+			description: "Directory where ECU defs, logger defs and .dtd file are placed.",
+			getDefaultValue: () => all_defs_dir
 		);
 		cli_all_defs_dir.AddAlias("-a");
 		cli_root.AddGlobalOption(cli_all_defs_dir);
@@ -200,7 +196,8 @@ internal class Program
 		var cli_logger_dir = new Option<string>
 		(
 			name: "--logger-dir",
-			description: "Directory where logger defs and .dtd file are placed."
+			description: "Directory where logger defs and .dtd file are placed.",
+			getDefaultValue: () => logger_dir
 		);
 		cli_logger_dir.AddAlias("-l");
 		cli_root.AddGlobalOption(cli_logger_dir);
@@ -209,7 +206,7 @@ internal class Program
 		(
 			name: "--ecu-defs",
 			description: "ECU definitions file name.",
-			getDefaultValue: () => "ecu_defs.xml"
+			getDefaultValue: () => ecu_defs
 		);
 		cli_ecu_defs.AddAlias("-e");
 		cli_root.AddGlobalOption(cli_ecu_defs);
@@ -218,7 +215,7 @@ internal class Program
 		(
 			name: "--logger-defs",
 			description: "Logger definitions file name.",
-			getDefaultValue: () => "logger.xml"
+			getDefaultValue: () => logger_xml
 		);
 		cli_logger_xml.AddAlias("-g");
 		cli_root.AddGlobalOption(cli_logger_xml);
@@ -227,7 +224,7 @@ internal class Program
 		(
 			name: "--logger-dtd",
 			description: "Logger dtd file name.",
-			getDefaultValue: () => "logger.dtd"
+			getDefaultValue: () => logger_dtd
 		);
 		cli_logger_dtd.AddAlias("-d");
 		cli_root.AddGlobalOption(cli_logger_dtd);
@@ -1025,8 +1022,12 @@ internal class Program
 						{
 							axis_name += "_Axis";
 						}
-						list.Add(axis_name);
 						string axis_address = xPathNavigator.GetAttribute("address", "");
+						if (string.IsNullOrEmpty(axis_address))
+							{
+								continue;
+							}
+						list.Add(axis_name);
 						//Not sure if EcuFlash has support for <offset>
 						axis_address = Add(axis_address, offset);
 						if (!axis_address.StartsWith("0x"))
@@ -1123,6 +1124,10 @@ internal class Program
 	/// <returns></returns>
 	private static string Add(string hex_address, int offset)
 	{
+		if (string.IsNullOrEmpty(hex_address) || string.IsNullOrWhiteSpace(hex_address))
+			{
+				hex_address = "0";
+			}
 		int addr = Convert.ToInt32(hex_address, 16);
 		addr += offset;
 		return addr.ToString("X");

@@ -4,18 +4,18 @@
     <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
     <OutputType>Exe</OutputType>
     <UseWindowsForms>True</UseWindowsForms>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net10.0-windows</TargetFramework>
     <PlatformTarget>x64</PlatformTarget>
-   <Platforms>x64;x86</Platforms>
+    <Platforms>x64;x86</Platforms>
   </PropertyGroup>
   <PropertyGroup>
-    <LangVersion>12.0</LangVersion>
+    <LangVersion>14</LangVersion>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup />
   <ItemGroup />
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.ILLink.Tasks" Version="8.0.1" />
+    <PackageReference Include="Microsoft.NET.ILLink.Tasks" Version="10" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta3.22114.1" />
   </ItemGroup>
 </Project>
